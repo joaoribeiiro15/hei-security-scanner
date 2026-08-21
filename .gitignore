@@ -1,0 +1,22 @@
+# Scan data - never commit raw results or derived reports
+src/source/*
+!src/source/.gitkeep
+src/results/
+src/charts/
+src/tables/
+*/src/data/results/
+*/src/data/errors/
+*/src/data/reports/
+*/src/data/dead_hosts/
+*/src/data/source/*
+!*/src/data/source/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db

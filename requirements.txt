@@ -1,0 +1,7 @@
+pandas>=2.2.2
+matplotlib>=3.9.4
+numpy>=2.0.0
+requests>=2.32.0
+selenium>=4.27.1
+selenium-stealth>=1.0.6
+customtkinter>=5.2.2
