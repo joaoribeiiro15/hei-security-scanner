@@ -9,24 +9,6 @@ Three independent scanners (HTTPS/TLS, HTTP Security Headers, DNSSEC) are unifie
 
 ---
 
-## Data availability
-
-**This repository contains code only.** All scan results, consolidated datasets,
-charts, LaTeX tables, and LLM risk reports produced for the thesis have been
-removed, because they contain per-institution security findings that cannot be
-disclosed.
-
-Every data directory (`src/source/`, `src/results/`, `src/charts/`, `src/tables/`
-and the equivalents inside each sub-scanner) ships empty with a `.gitkeep`
-placeholder. Place your own institution list in `src/source/` and run the
-scanners to regenerate everything.
-
-The HEI lists used in the thesis are published separately as
-[hei-norway-dataset](../hei-norway-dataset) and
-[hei-portugal-dataset](../hei-portugal-dataset).
-
----
-
 ## What was built and why
 
 The HTTPS/TLS, Security Headers, and DNSSEC scanners were originally developed by [Jackson Barreto](https://github.com/jacksonbarreto) as independent tools. This project unifies them into a single repository and CLI, adds a central data directory so the input CSV only needs to be placed once, and extends the toolset with an LLM-powered risk analysis layer that turns raw scanner output into actionable security reports, without any additional active scanning.
@@ -44,8 +26,9 @@ hei-security-scanner/
 ├── llm_risk_analysis.py         # LLM risk analysis (reads scanner CSVs)
 ├── requirements.txt
 │
-├── src/                         # All inputs and outputs live here (ships empty)
+├── src/                         # All inputs and outputs live here (empty in this repo)
 │   ├── source/                  # Drop your input CSV here once
+│   ├── consolidation/           # Cross-scanner final score
 │   ├── results/
 │   │   ├── https/
 │   │   ├── headers/
@@ -60,14 +43,26 @@ hei-security-scanner/
 │       ├── headers/
 │       └── dnssec/
 │
-├── assets/                      # GUI theme
 ├── scripts/                     # One-off data repair helpers
-│
-├── testssl.sh/                  # Bundled testssl.sh (used by HTTPS scanner)
-├── http_scanner/                # HTTPS/TLS scanner + analyzer
-├── security_headers_scanner/    # HTTP security headers scanner + analyzer
-└── dnssec_scanner/              # DNSSEC scanner + analyzer
+├── testssl.sh/                  # Vendored testssl.sh (not shipped, see Setup)
+├── http_scanner/
+├── security_headers_scanner/
+└── dnssec_scanner/
 ```
+
+---
+
+## Data availability
+
+This repository contains **source code only**. No scan results, consolidated
+CSVs, LLM risk reports, error logs or institution datasets are published here.
+Every data directory (`src/source/`, `src/results/`, `src/charts/`,
+`src/tables/` and each scanner's `src/data/`) ships empty, kept in place by
+`.gitkeep` files.
+
+The scan outputs underpinning the thesis are not distributed with the code.
+The HEI input lists are published separately in their own dataset
+repositories. Place your own input CSV in `src/source/` as described below.
 
 ---
 
@@ -76,17 +71,22 @@ hei-security-scanner/
 **Requirements:** Python 3.10+, Linux or macOS (bash required by testssl.sh)
 
 ```bash
+# 1. Clone
+git clone <repository-url> hei-security-scanner
 cd hei-security-scanner
 
-# 1. Virtual environment
+# 1b. Vendor testssl.sh (required by the HTTPS/TLS scanner)
+git clone --depth 1 https://github.com/testssl/testssl.sh.git testssl.sh
+
+# 2. Virtual environment
 python3 -m venv venv
 source venv/bin/activate
 
-# 2. Dependencies
+# 3. Dependencies
 pip install -r requirements.txt
 
-# 3. Place your institution dataset
-cp /path/to/no-heis-2026.csv src/source/
+# 4. Place your institution dataset
+cp no-heis-2026.csv src/source/
 ```
 
 The input CSV is automatically distributed to each scanner at runtime, no further configuration needed.
@@ -264,13 +264,13 @@ python llm_risk_analysis.py --backend lmstudio \
 
 # Different machine on the network:
 python llm_risk_analysis.py --backend lmstudio \
-    --lmstudio-host 192.168.1.50 \
+    --lmstudio-host 192.168.1.100 \
     --https-csv   src/results/https/no_https_scanner.csv \
     --headers-csv src/results/headers/sh_final_result_with_scores_unique_hei.csv \
     --dnssec-csv  src/results/dnssec/no_dnssec_scanner.csv
 
 # See which models are loaded:
-python llm_risk_analysis.py --backend lmstudio --lmstudio-host 192.168.1.50 --list-models
+python llm_risk_analysis.py --backend lmstudio --lmstudio-host 192.168.1.100 --list-models
 
 # Specify a model explicitly:
 python llm_risk_analysis.py --backend lmstudio \

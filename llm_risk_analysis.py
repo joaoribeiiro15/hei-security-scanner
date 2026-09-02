@@ -28,20 +28,20 @@ Quick-start examples
 
   # LM Studio on another machine in the network:
   python llm_risk_analysis.py --backend lmstudio \\
-      --lmstudio-host 192.168.1.50 \\
+      --lmstudio-host 192.168.1.100 \\
       --https-csv   src/results/https/XX_https_scanner.csv \\
       --headers-csv src/results/headers/sh_final_result_with_scores_unique_hei.csv \\
       --dnssec-csv  src/results/dnssec/XX_dnssec_scanner.csv
 
   # Specify a model explicitly:
   python llm_risk_analysis.py --backend lmstudio \\
-      --lmstudio-host 192.168.1.50 \\
+      --lmstudio-host 192.168.1.100 \\
       --model "lmstudio-community/Meta-Llama-3.1-8B-Instruct-GGUF" \\
       --https-csv ... --headers-csv ... --dnssec-csv ...
 
   # List models currently available on a LM Studio server:
   python llm_risk_analysis.py --backend lmstudio \\
-      --lmstudio-host 192.168.1.50 --list-models
+      --lmstudio-host 192.168.1.100 --list-models
 
   # Ollama local:
   python llm_risk_analysis.py --backend ollama \\

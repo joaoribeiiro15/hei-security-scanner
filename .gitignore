@@ -1,15 +1,16 @@
-# Scan data - never commit raw results or derived reports
+# Scan data — never commit inputs, results, logs or derived outputs
 src/source/*
 !src/source/.gitkeep
 src/results/
 src/charts/
 src/tables/
-*/src/data/results/
-*/src/data/errors/
-*/src/data/reports/
-*/src/data/dead_hosts/
-*/src/data/source/*
-!*/src/data/source/.gitkeep
+**/src/data/source/*
+!**/src/data/source/.gitkeep
+**/src/data/results/
+**/src/data/reports/
+**/src/data/errors/
+**/src/data/dead_hosts/
+*.log
 
 # Python
 __pycache__/
@@ -17,6 +18,17 @@ __pycache__/
 .venv/
 venv/
 
+# Environment and secrets — never commit
+.env
+*.pem
+*.key
+
 # OS / editor
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
+
+# Local tooling / assistant scratch files
+.*-local/
+*.local.md
